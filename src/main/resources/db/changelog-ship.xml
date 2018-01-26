@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="ship" author="mike">
+        <createTable tableName="ship">
+            <column name="hull" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="air" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="engine" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coordX" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coordY" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="speed" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="direction" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="shipData" author="mike">
+        <insert tableName="ship">
+            <column name="hull" value="100"/>
+            <column name="air" value="100"/>
+            <column name="engine" value="100"/>
+            <column name="coordX" value="0"/>
+            <column name="coordY" value="0"/>
+            <column name="speed" value="1"/>
+            <column name="direction" value="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
