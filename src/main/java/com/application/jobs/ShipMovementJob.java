@@ -1,7 +1,7 @@
 package com.application.jobs;
 
-import com.application.services.JMSService;
-import com.application.tasks.ShipJump;
+import com.application.services.TaskQueueService;
+import com.application.tasks.immidiate.ShipJump;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShipMovementJob {
 
-    private JMSService jmsService;
+    private TaskQueueService taskQueueService;
     @Autowired
-    public ShipMovementJob(JMSService jmsService) {
-        this.jmsService = jmsService;
+    public ShipMovementJob(TaskQueueService jmsService) {
+        this.taskQueueService = jmsService;
     }
 
-    @Scheduled(fixedRate = 10000)
-    private void shipMovement() {
-        jmsService.sendShipTask(new ShipJump());
-    }
+//    @Scheduled(fixedRate = 10000)
+//    private void shipMovement() {
+//        taskQueueService.sendShipTask(new ShipJump());
+//    }
 }

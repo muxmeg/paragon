@@ -4,26 +4,95 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="roles" author="mike">
         <createTable tableName="roles">
-            <column name="login" type="varchar(255)">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="password" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="role" type="varchar(255)">
+            <column name="secret" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="secret" type="boolean">
+            <column name="team" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet id="rolesData" author="mike">
         <insert tableName="roles">
-            <column name="login" value="cap"/>
-            <column name="password" value="cap11"/>
-            <column name="role" value="captain"/>
+            <column name="name" value="captain"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
         </insert>
+        <insert tableName="roles">
+            <column name="name" value="firstPilot"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="secondPilot"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="engineer"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="navigator"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="operator"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="ship"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="dispatcher"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="center"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="SKK"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="center"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="coordinator"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="center"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="name" value="analyst"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="center"/>
+        </insert>
+    </changeSet>
+    <changeSet id="roleParameters" author="mike">
+        <createTable tableName="role_parameters">
+            <column name="roleName" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="role_parameters" columnNames="name,roleName"/>
     </changeSet>
 </databaseChangeLog>

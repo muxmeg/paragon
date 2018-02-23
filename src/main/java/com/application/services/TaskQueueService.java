@@ -10,11 +10,11 @@ import static com.application.constants.JMSQueues.SHIP_TASK_QUEUE;
 
 
 @Service
-public class JMSService {
+public class TaskQueueService {
 
     private JmsTemplate jmsTemplate;
     @Autowired
-    public JMSService(JmsTemplate jmsTemplate) {
+    public TaskQueueService(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
     }
 

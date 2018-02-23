@@ -10,13 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 @Repository
 @Transactional
 public class ShipRepository {
     private static final String GET_SHIP = "SELECT * FROM ship";
     private static final String UPDATE_SHIP = "UPDATE ship SET hull = :hull, air = :air, engine = :engine," +
-            " coordX = :coordX, coordY = :coordY, speed = :speed, direction = :direction";
+            " coordX = :coordX, coordY = :coordY, speed = :speed, direction = :direction, cargo = :cargo," +
+            "transmitter_disabled_turns = :transmitterDisabledTurns, air_users = :airUsers, anchor_on = :anchorOn";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ShipRowMapper rowMapper;
@@ -27,18 +29,20 @@ public class ShipRepository {
         this.rowMapper = new ShipRowMapper();
     }
 
-    public Ship getShip() {
+    private void queryShip() {
         if (cachedShip == null) {
             cachedShip = jdbcTemplate.queryForObject(GET_SHIP, new MapSqlParameterSource(), rowMapper);
         }
+    }
+
+    public Ship getShip() {
+        queryShip();
         return cachedShip.copy();
     }
 
     public boolean isTransmitterEnabled() {
-        if (cachedShip == null) {
-            cachedShip = jdbcTemplate.queryForObject(GET_SHIP, new MapSqlParameterSource(), rowMapper);
-        }
-        return cachedShip.isTransmitterEnabled();
+        queryShip();
+        return cachedShip.getTransmitterDisabledTurns() > 0;
     }
 
     public void updateShip(Ship ship) {
@@ -46,7 +50,10 @@ public class ShipRepository {
         jdbcTemplate.update(UPDATE_SHIP, new MapSqlParameterSource().addValue("hull", ship.getHull())
                 .addValue("air", ship.getAir()).addValue("engine", ship.getEngine())
                 .addValue("coordX", ship.getCoordX()).addValue("coordY", ship.getCoordY())
-                .addValue("speed", ship.getSpeed()).addValue("direction", ship.getDirection().ordinal()));
+                .addValue("speed", ship.getSpeed()).addValue("direction", ship.getDirection().ordinal())
+                .addValue("cargo", Arrays.toString(ship.getCargo()))
+                .addValue("transmitterDisabledTurns", ship.getTransmitterDisabledTurns())
+                .addValue("airUsers", ship.getAirUsers()).addValue("anchorOn", ship.isAnchorOn()));
     }
 
     private class ShipRowMapper implements RowMapper<Ship> {

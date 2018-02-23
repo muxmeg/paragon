@@ -18,12 +18,14 @@ public class Ship {
 
     private int transmitterDisabledTurns;
     private int airUsers;
+    private boolean anchorOn;
+    private boolean[] cargo;
 
     public Ship() {
     }
 
     public Ship(int hull, int air, int engine, int coordX, int coordY, int speed, Direction direction,
-                int transmitterDisabledTurns, int airUsers) {
+                int transmitterDisabledTurns, int airUsers, boolean anchorOn) {
         this.hull = hull;
         this.air = air;
         this.engine = engine;
@@ -33,11 +35,13 @@ public class Ship {
         this.direction = direction;
         this.transmitterDisabledTurns = transmitterDisabledTurns;
         this.airUsers = airUsers;
+        this.anchorOn = anchorOn;
     }
 
     public Ship copy() {
         return Ship.builder().hull(hull).air(air).engine(engine).coordX(coordX).coordY(coordY).speed(speed)
-                .direction(direction).transmitterDisabledTurns(transmitterDisabledTurns).airUsers(airUsers).build();
+                .direction(direction).transmitterDisabledTurns(transmitterDisabledTurns).airUsers(airUsers)
+                .anchorOn(anchorOn).build();
     }
 
     public void move(Direction direction, int distance) {

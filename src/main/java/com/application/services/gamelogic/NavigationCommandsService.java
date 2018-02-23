@@ -1,8 +1,8 @@
 package com.application.services.gamelogic;
 
-import com.application.tasks.ChangeDirection;
-import com.application.tasks.ChangeSpeed;
-import com.application.tasks.JumpShipTask;
+import com.application.tasks.scheduled.ChangeDirection;
+import com.application.tasks.scheduled.ChangeSpeed;
+import com.application.tasks.ScheduledTask;
 import com.application.utils.StringGenerator;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +14,18 @@ import java.util.Set;
 @Service
 public class NavigationCommandsService {
     private final StringGenerator stringGenerator;
+    private final ScheduledTaskService scheduledTaskService;
 
-    private static final String COMMAND_SYMBOLS = "abcABC123!@#$%^&*()_+=-'/.,[]{}~";
+    private static final String COMMAND_SYMBOLS = "abcABC123!@#$%^&*()_+=-'/.,[]{}";
     private static final int COMMAND_LENGTH = 12;
-    private static Set<JumpShipTask> navigationCommands;
+    private static Set<ScheduledTask> navigationCommands;
 
-    private Map<String, JumpShipTask> activeNavigationCommands;
+    private Map<String, ScheduledTask> activeNavigationCommands;
     private String activeSymbols;
 
-    public NavigationCommandsService(StringGenerator stringGenerator) {
+    public NavigationCommandsService(StringGenerator stringGenerator, ScheduledTaskService scheduledTaskService) {
         this.stringGenerator = stringGenerator;
+        this.scheduledTaskService = scheduledTaskService;
 
         navigationCommands = new HashSet<>();
         navigationCommands.add(new ChangeDirection(true));
@@ -33,7 +35,7 @@ public class NavigationCommandsService {
         navigationCommands.add(new ChangeSpeed(-1));
     }
 
-    public Map<String, JumpShipTask> generateNavigationCommands() {
+    public Map<String, ScheduledTask> generateNavigationCommands() {
         activeSymbols = stringGenerator.generateString(COMMAND_LENGTH, COMMAND_SYMBOLS);
         activeNavigationCommands = new HashMap<>();
 
@@ -41,15 +43,16 @@ public class NavigationCommandsService {
         return activeNavigationCommands;
     }
 
-    private void putNavigationCommand(JumpShipTask task) {
+    private void putNavigationCommand(ScheduledTask task) {
         String commandString;
         do {
             commandString = stringGenerator.generateStringFromUniqueSymbols(activeSymbols);
-        } while (!activeNavigationCommands.containsKey(commandString));
+        } while (activeNavigationCommands.containsKey(commandString));
         activeNavigationCommands.put(commandString, task);
     }
 
-    public JumpShipTask addNavigationCommand(String commandString) {
-        return activeNavigationCommands.get(commandString);
+    public void addNavigationCommand(String commandString) {
+        scheduledTaskService.addTask(activeNavigationCommands.get(commandString));
     }
+
 }
