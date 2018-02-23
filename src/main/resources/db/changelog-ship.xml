@@ -34,7 +34,7 @@
             <column name="air_users" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="anchor_on" type="int">
+            <column name="anchor_on" type="boolean">
                 <constraints nullable="false"/>
             </column>
         </createTable>

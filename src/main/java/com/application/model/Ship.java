@@ -1,11 +1,13 @@
 package com.application.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Builder;
 import org.springframework.beans.BeanUtils;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Ship {
     private int hull;
     private int air;
@@ -24,24 +26,24 @@ public class Ship {
     public Ship() {
     }
 
-    public Ship(int hull, int air, int engine, int coordX, int coordY, int speed, Direction direction,
-                int transmitterDisabledTurns, int airUsers, boolean anchorOn) {
-        this.hull = hull;
-        this.air = air;
-        this.engine = engine;
-        this.coordX = coordX;
-        this.coordY = coordY;
-        this.speed = speed;
-        this.direction = direction;
-        this.transmitterDisabledTurns = transmitterDisabledTurns;
-        this.airUsers = airUsers;
-        this.anchorOn = anchorOn;
-    }
+//    public Ship(int hull, int air, int engine, int coordX, int coordY, int speed, Direction direction,
+//                int transmitterDisabledTurns, int airUsers, boolean anchorOn) {
+//        this.hull = hull;
+//        this.air = air;
+//        this.engine = engine;
+//        this.coordX = coordX;
+//        this.coordY = coordY;
+//        this.speed = speed;
+//        this.direction = direction;
+//        this.transmitterDisabledTurns = transmitterDisabledTurns;
+//        this.airUsers = airUsers;
+//        this.anchorOn = anchorOn;
+//    }
 
     public Ship copy() {
         return Ship.builder().hull(hull).air(air).engine(engine).coordX(coordX).coordY(coordY).speed(speed)
                 .direction(direction).transmitterDisabledTurns(transmitterDisabledTurns).airUsers(airUsers)
-                .anchorOn(anchorOn).build();
+                .anchorOn(anchorOn).cargo(cargo).build();
     }
 
     public void move(Direction direction, int distance) {
