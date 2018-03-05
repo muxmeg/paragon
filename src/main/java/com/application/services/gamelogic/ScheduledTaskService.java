@@ -1,6 +1,7 @@
 package com.application.services.gamelogic;
 
 import com.application.tasks.ScheduledTask;
+import com.application.tasks.scheduled.ScheduledTaskType;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -9,11 +10,11 @@ import java.util.Map;
 
 @Service
 public class ScheduledTaskService {
-    private final Map<String, ScheduledTask> scheduledTasks = new HashMap<>();
+    private final Map<ScheduledTaskType, ScheduledTask> scheduledTasks = new HashMap<>();
 
     public void addTask(ScheduledTask task) {
         if (task != null) {
-            scheduledTasks.put(task.getClass().getName(), task);
+            scheduledTasks.put(task.getScheduledTaskType(), task);
         }
     }
 

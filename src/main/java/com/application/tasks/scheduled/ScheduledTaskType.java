@@ -1,5 +1,5 @@
 package com.application.tasks.scheduled;
 
 public enum ScheduledTaskType {
-    DIRECTION, SPEED
+    DIRECTION, SPEED, BOOST, COOLERS
 }

@@ -1,45 +1,53 @@
 package com.application.services.gamelogic;
 
+import com.application.controllers.socket.NavigationController;
+import com.application.dto.EncryptedCommandDto;
+import com.application.dto.NavigationCommandsDto;
 import com.application.tasks.scheduled.ChangeDirection;
 import com.application.tasks.scheduled.ChangeSpeed;
 import com.application.tasks.ScheduledTask;
 import com.application.utils.StringGenerator;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Service
 public class NavigationCommandsService {
     private final StringGenerator stringGenerator;
     private final ScheduledTaskService scheduledTaskService;
+    private final NavigationController navigationController;
 
-    private static final String COMMAND_SYMBOLS = "abcABC123!@#$%^&*()_+=-'/.,[]{}";
-    private static final int COMMAND_LENGTH = 12;
-    private static Set<ScheduledTask> navigationCommands;
+    private static final String COMMAND_SYMBOLS = "abcdABCDX123!?@#$%^&*()+=-'/.,[]{}";
+    public static final int COMMAND_LENGTH = 12;
+    public static final int PARTIAL_COMMAND_LENGTH = 3;
+    private static final Set<ScheduledTask> navigationTasks;
 
     private Map<String, ScheduledTask> activeNavigationCommands;
     private String activeSymbols;
 
-    public NavigationCommandsService(StringGenerator stringGenerator, ScheduledTaskService scheduledTaskService) {
+    static {
+        navigationTasks = new HashSet<>();
+        navigationTasks.add(new ChangeDirection(true));
+        navigationTasks.add(new ChangeDirection(false));
+        navigationTasks.add(new ChangeSpeed(1));
+        navigationTasks.add(new ChangeSpeed(2));
+        navigationTasks.add(new ChangeSpeed(-1));
+    }
+
+    public NavigationCommandsService(StringGenerator stringGenerator, ScheduledTaskService scheduledTaskService,
+                                     NavigationController navigationController) {
         this.stringGenerator = stringGenerator;
         this.scheduledTaskService = scheduledTaskService;
-
-        navigationCommands = new HashSet<>();
-        navigationCommands.add(new ChangeDirection(true));
-        navigationCommands.add(new ChangeDirection(false));
-        navigationCommands.add(new ChangeSpeed(1));
-        navigationCommands.add(new ChangeSpeed(2));
-        navigationCommands.add(new ChangeSpeed(-1));
+        this.navigationController = navigationController;
     }
 
     public Map<String, ScheduledTask> generateNavigationCommands() {
-        activeSymbols = stringGenerator.generateString(COMMAND_LENGTH, COMMAND_SYMBOLS);
+        activeSymbols = stringGenerator.generateStringFromUniqueSymbols(COMMAND_SYMBOLS, COMMAND_LENGTH);
         activeNavigationCommands = new HashMap<>();
 
-        navigationCommands.forEach(this::putNavigationCommand);
+        navigationTasks.forEach(this::putNavigationCommand);
         return activeNavigationCommands;
     }
 
@@ -51,8 +59,38 @@ public class NavigationCommandsService {
         activeNavigationCommands.put(commandString, task);
     }
 
+    public Set<String> getNavigationStrings() {
+        return activeNavigationCommands.keySet();
+    }
+
     public void addNavigationCommand(String commandString) {
         scheduledTaskService.addTask(activeNavigationCommands.get(commandString));
+    }
+
+    public Map<Integer, Character> generatePartialCommand(String commandString) {
+        Map<Integer, Character> result = new HashMap<>();
+        do {
+            int idx = ThreadLocalRandom.current().nextInt(COMMAND_LENGTH);
+            if (!result.containsKey(idx)) {
+                result.put(idx, commandString.toCharArray()[idx]);
+            }
+        } while (result.size() < PARTIAL_COMMAND_LENGTH);
+        return result;
+    }
+
+    public void updateNavigationStrings() {
+        navigationController.updateNavigationStrings(getNavigationStrings());
+    }
+
+    public void updateNavigationCommands() {
+        Map<String, ScheduledTask> activeNavigationCommands = generateNavigationCommands();
+
+        updateNavigationStrings();
+
+        List<EncryptedCommandDto> commands = activeNavigationCommands.entrySet().stream().map(
+                entry -> new EncryptedCommandDto(generatePartialCommand(entry.getKey()),
+                        entry.getValue())).collect(Collectors.toList());
+        navigationController.updateNavigationCommands(new NavigationCommandsDto(commands));
     }
 
 }

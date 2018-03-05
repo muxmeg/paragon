@@ -3,8 +3,12 @@ package com.application.tasks.scheduled;
 import com.application.model.Ship;
 import com.application.tasks.ScheduledTask;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @JsonSerialize
+@Data
 public class ChangeDirection extends ScheduledTask {
 
     private final boolean right;

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 @Transactional
@@ -51,7 +53,8 @@ public class ShipRepository {
                 .addValue("air", ship.getAir()).addValue("engine", ship.getEngine())
                 .addValue("coordX", ship.getCoordX()).addValue("coordY", ship.getCoordY())
                 .addValue("speed", ship.getSpeed()).addValue("direction", ship.getDirection().ordinal())
-                .addValue("cargo", Arrays.toString(ship.getCargo()))
+                .addValue("cargo", Arrays.stream(ship.getCargo()).map(String::valueOf)
+                        .collect(Collectors.joining(",")))
                 .addValue("transmitterDisabledTurns", ship.getTransmitterDisabledTurns())
                 .addValue("airUsers", ship.getAirUsers()).addValue("anchorOn", ship.isAnchorOn()));
     }
@@ -60,6 +63,7 @@ public class ShipRepository {
 
         @Override
         public Ship mapRow(ResultSet resultSet, int i) throws SQLException {
+
             return Ship.builder().air(resultSet.getInt("air"))
                     .hull(resultSet.getInt("hull"))
                     .engine(resultSet.getInt("engine"))
@@ -67,6 +71,9 @@ public class ShipRepository {
                     .coordY(resultSet.getInt("coordY"))
                     .speed(resultSet.getInt("speed"))
                     .direction(Direction.values()[resultSet.getInt("direction")])
+                    .cargo(Arrays.stream(resultSet.getString("cargo").split(","))
+                            .map(Boolean::parseBoolean).toArray(Boolean[]::new))
+                    .airUsers(resultSet.getInt("air_users"))
                     .build();
         }
     }

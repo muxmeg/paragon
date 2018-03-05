@@ -6,6 +6,8 @@ import com.application.model.Role;
 import com.application.services.RoleService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import static com.application.App.REST_SERVICE_PREFIX;
 
 @CrossOrigin
@@ -21,8 +23,11 @@ public class AuthenticationController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "login")
-    public RoleDto loginRole(@RequestBody LoginDto dto) {
-        Role role = roleService.verifyPassword(dto.getName(), dto.getPassword());
-        return RoleDto.fromEntity(role);
+    public RoleDto loginRole(@RequestBody LoginDto dto) { //TODO throw exception
+        Optional<Role> role = roleService.getRoleByCredentials(dto.getName(), dto.getPassword());
+        if (role.isPresent()) {
+            return RoleDto.fromEntity(role.get());
+        }
+        return null;
     }
 }

@@ -21,7 +21,7 @@ public class Ship {
     private int transmitterDisabledTurns;
     private int airUsers;
     private boolean anchorOn;
-    private boolean[] cargo;
+    private Boolean[] cargo;
 
     public Ship() {
     }

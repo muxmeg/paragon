@@ -1,14 +1,22 @@
 package com.application.dto;
 
+import com.application.model.Ship;
 import lombok.Data;
+import lombok.experimental.Builder;
 
 @Data
+@Builder
 public class ShipDataDto {
     private int hull;
     private int air;
     private int engine;
-    private boolean[] cargo;
+    private Boolean[] cargo;
     private int airUsers;
 
     private String message;
+
+    public static ShipDataDto fromEntity(Ship ship, String message) {
+        return ShipDataDto.builder().hull(ship.getHull()).air(ship.getAir()).engine(ship.getEngine())
+                .cargo(ship.getCargo()).airUsers(ship.getAirUsers()).message(message).build();
+    }
 }

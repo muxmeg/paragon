@@ -48,7 +48,7 @@
             <column name="coordY" value="0"/>
             <column name="speed" value="1"/>
             <column name="direction" value="0"/>
-            <column name="cargo" value="[true, true, true, true, true]"/>
+            <column name="cargo" value="true,true,true,true,true"/>
             <column name="air_users" value="6"/>
             <column name="anchor_on" value="false"/>
             <column name="transmitter_disabled_turns" value="0"/>

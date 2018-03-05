@@ -1,7 +1,9 @@
 package com.application.services;
 
 import com.application.controllers.socket.NavigationController;
+import com.application.controllers.socket.ShipDataController;
 import com.application.dto.NavigationDataDto;
+import com.application.dto.ShipDataDto;
 import com.application.model.Ship;
 import com.application.repositories.RolesRepository;
 import com.application.repositories.ShipRepository;
@@ -14,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Transactional
 @Service
@@ -28,10 +28,12 @@ public class ShipService {
     private final WindService windService;
     private final RolesRepository rolesRepository;
     private final NavigationController navigationController;
+    private final ShipDataController shipDataController;
 
     public ShipService(ShipRepository shipRepository, MeteorStormService meteorStormService,
                        ScheduledTaskService jumpShipTaskService, NavigationCommandsService navigationCommandsService,
-                       WindService windService, RolesRepository rolesRepository, NavigationController navigationController) {
+                       WindService windService, RolesRepository rolesRepository, NavigationController navigationController,
+                       ShipDataController shipDataController) {
         this.shipRepository = shipRepository;
         this.meteorStormService = meteorStormService;
         this.jumpShipTaskService = jumpShipTaskService;
@@ -39,6 +41,7 @@ public class ShipService {
         this.windService = windService;
         this.rolesRepository = rolesRepository;
         this.navigationController = navigationController;
+        this.shipDataController = shipDataController;
     }
 
     public Ship getShip() {
@@ -49,12 +52,28 @@ public class ShipService {
         shipRepository.updateShip(ship);
     }
 
+    public void requestShipDataUpdate() {
+        shipDataController.onShipDataUpdate(ShipDataDto.fromEntity(shipRepository.getShip(),
+                "Ship information been updated by request."));
+    }
+
     public void disableRadio(int turns, String sender) {
         Ship ship = shipRepository.getShip();
         ship.setTransmitterDisabledTurns(ship.getTransmitterDisabledTurns() + turns);
         shipRepository.updateShip(ship);
 
         rolesRepository.increaseOrSetParameter(sender, "disableRadio", 1);
+    }
+
+    public void ejectCargo(int cargoId, String sender) {
+        Ship ship = shipRepository.getShip();
+        if (ship.getCargo()[cargoId]) {
+            ship.getCargo()[cargoId] = false;
+            shipRepository.updateShip(ship);
+
+            shipDataController.onShipDataUpdate(ShipDataDto.fromEntity(shipRepository.getShip(),
+                    "Cargo been manually ejected!"));
+        }
     }
 
     public void switchAnchor(String sender) {
@@ -87,22 +106,13 @@ public class ShipService {
 
         shipRepository.updateShip(ship);
 
+        navigationController.updateNavigationData(ship);
 
-        navigationController.updateNavigationData(NavigationDataDto.builder().coordX(ship.getCoordX())
-                .coordY(ship.getCoordY()).direction(ship.getDirection()).speed(ship.getSpeed()).build());
+        navigationCommandsService.updateNavigationCommands();
     }
 
-    public void updateNavigationCommands() {
-        Map<String, ScheduledTask> activeNavigationCommands = navigationCommandsService.generateNavigationCommands();
-
-        navigationController.updateNavigationStrings(activeNavigationCommands.keySet());
-
-        Map<String, Map<Integer, String>> navigationCommandsDto = new HashMap<>();
-        for (Map.Entry<String, ScheduledTask> entry : activeNavigationCommands.entrySet()) {
-            switch (entry.getValue().getScheduledTaskType()) {
-                case DIRECTION:
-                    //TODO ----
-            }
-        }
+    public void updateNavigationData() {
+        Ship ship = shipRepository.getShip();
+        navigationController.updateNavigationData(ship);
     }
 }

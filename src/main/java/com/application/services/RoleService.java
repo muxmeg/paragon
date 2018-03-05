@@ -15,9 +15,9 @@ public class RoleService {
         this.rolesRepository = rolesRepository;
     }
 
-    public Role verifyPassword(String name, String password) {
+    public Optional<Role> getRoleByCredentials(String name, String password) {
         Optional<Role> role = rolesRepository.getRole(name);
-        return role.isPresent() && role.get().getPassword().equals(password) ? role.get() : null;
+        return role.isPresent() && role.get().getPassword().equals(password) ? role : Optional.empty();
     }
 
     public List<String> findRoleNamesByTeam(String team) {

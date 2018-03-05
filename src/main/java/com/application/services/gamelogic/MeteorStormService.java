@@ -33,7 +33,14 @@ public class MeteorStormService {
 
     public Ship applyStormEffects(Ship ship) {
         switch (nextStormLevel) {
-
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
         }
         return ship;
     }

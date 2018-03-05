@@ -9,23 +9,21 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @JsonSerialize
 @Data
-public class ChangeSpeed extends ScheduledTask {
+public class EnableCoolers extends ScheduledTask {
 
-    private final int amount;
-
-    public ChangeSpeed(int amount) {
-        super();
-        this.amount = amount;
+    public EnableCoolers(String sender) {
+        super(sender);
     }
 
     @Override
     public ScheduledTaskType getScheduledTaskType() {
-        return ScheduledTaskType.SPEED;
+        return ScheduledTaskType.COOLERS;
     }
 
     @Override
     public Ship execute(Ship ship) {
-        ship.setSpeed(ship.getSpeed() + amount);
+        ship.setSpeed(ship.getAir() - 5);
+        ship.setEngine(ship.getEngine() + 5);
         return ship;
     }
 }

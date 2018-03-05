@@ -1,8 +1,9 @@
 package com.application.controllers.socket;
 
-import com.application.dto.ImmediateShipTaskDto;
+import com.application.dto.ShipTaskDto;
 import com.application.services.TaskQueueService;
 import com.application.tasks.immidiate.DisableRadio;
+import com.application.tasks.immidiate.EjectCargo;
 import com.application.tasks.immidiate.GeneratorActivation;
 import com.application.tasks.immidiate.SwitchAnchor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,7 +19,7 @@ public class ImmediateTaskController {
     }
 
     @MessageMapping(MAPPING_IMMEDIATE_TASK)
-    public void setMappingImmediateTaskReceive(ImmediateShipTaskDto task) {
+    public void setMappingImmediateTaskReceive(ShipTaskDto task) {
         switch (task.getType()) {
             case "disableRadio":
                 taskQueueService.sendShipTask(new DisableRadio(Integer.parseInt(task.getParameters().get("turns")),
@@ -29,6 +30,10 @@ public class ImmediateTaskController {
                 break;
             case "generatorActivation":
                 taskQueueService.sendShipTask(new GeneratorActivation(task.getSender()));
+                break;
+            case "ejectCargo":
+                taskQueueService.sendShipTask(new EjectCargo(Integer.parseInt(task.getParameters().get("cargoId")),
+                    task.getSender()));
                 break;
         }
     }
