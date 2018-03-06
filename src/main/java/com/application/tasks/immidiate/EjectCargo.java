@@ -1,6 +1,6 @@
 package com.application.tasks.immidiate;
 
-import com.application.services.ShipService;
+import com.application.services.ShipTasksService;
 import com.application.tasks.ImmediateShipTask;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class EjectCargo extends ImmediateShipTask {
     }
 
     @Override
-    public void execute(ShipService shipService) {
-        shipService.ejectCargo(cargoId, sender);
+    public void execute(ShipTasksService shipTasksService) {
+        shipTasksService.ejectCargo(cargoId, sender);
     }
 }

@@ -1,6 +1,6 @@
 package com.application.tasks.immidiate;
 
-import com.application.services.ShipService;
+import com.application.services.ShipTasksService;
 import com.application.tasks.ImmediateShipTask;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class GeneratorActivation extends ImmediateShipTask {
     }
 
     @Override
-    public void execute(ShipService shipService) {
-        shipService.generatorActivation(sender);
+    public void execute(ShipTasksService shipTasksService) {
+        shipTasksService.generatorActivation(sender);
     }
 }

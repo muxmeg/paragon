@@ -19,7 +19,7 @@ import java.util.Collection;
 
 @Transactional
 @Service
-public class ShipService {
+public class ShipTasksService {
 
     private final ShipRepository shipRepository;
     private final MeteorStormService meteorStormService;
@@ -30,10 +30,10 @@ public class ShipService {
     private final NavigationController navigationController;
     private final ShipDataController shipDataController;
 
-    public ShipService(ShipRepository shipRepository, MeteorStormService meteorStormService,
-                       ScheduledTaskService jumpShipTaskService, NavigationCommandsService navigationCommandsService,
-                       WindService windService, RolesRepository rolesRepository, NavigationController navigationController,
-                       ShipDataController shipDataController) {
+    public ShipTasksService(ShipRepository shipRepository, MeteorStormService meteorStormService,
+                            ScheduledTaskService jumpShipTaskService, NavigationCommandsService navigationCommandsService,
+                            WindService windService, RolesRepository rolesRepository, NavigationController navigationController,
+                            ShipDataController shipDataController) {
         this.shipRepository = shipRepository;
         this.meteorStormService = meteorStormService;
         this.jumpShipTaskService = jumpShipTaskService;

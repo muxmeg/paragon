@@ -1,6 +1,6 @@
 package com.application.controllers.socket;
 
-import com.application.services.ShipService;
+import com.application.services.ShipTasksService;
 import com.application.services.gamelogic.NavigationCommandsService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -14,11 +14,11 @@ public class NavigationMappingController {
     public static final String MAPPING_NAVIGATION_DATA_REQUEST = "/navigationData/request";
 
     private final NavigationCommandsService navigationCommandsService;
-    private final ShipService shipService;
+    private final ShipTasksService shipTasksService;
 
-    public NavigationMappingController(NavigationCommandsService navigationCommandsService, ShipService shipService) {
+    public NavigationMappingController(NavigationCommandsService navigationCommandsService, ShipTasksService shipTasksService) {
         this.navigationCommandsService = navigationCommandsService;
-        this.shipService = shipService;
+        this.shipTasksService = shipTasksService;
     }
 
     @MessageMapping(MAPPING_NAVIGATION_COMMANDS)
@@ -38,6 +38,6 @@ public class NavigationMappingController {
 
     @MessageMapping(MAPPING_NAVIGATION_DATA_REQUEST)
     public void navigationDataRequest(String request) {
-        shipService.updateNavigationData();
+        shipTasksService.updateNavigationData();
     }
 }

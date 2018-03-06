@@ -13,12 +13,12 @@ import static com.application.constants.JMSQueues.SHIP_TASK_QUEUE;
 @Service
 public class TaskQueueExecutor {
 
-    private final ShipService shipService;
+    private final ShipTasksService shipTasksService;
     private final ScheduledTaskService scheduledTaskService;
 
 
-    public TaskQueueExecutor(ShipService shipService, ScheduledTaskService scheduledTaskService) {
-        this.shipService = shipService;
+    public TaskQueueExecutor(ShipTasksService shipTasksService, ScheduledTaskService scheduledTaskService) {
+        this.shipTasksService = shipTasksService;
         this.scheduledTaskService = scheduledTaskService;
     }
 
@@ -26,7 +26,7 @@ public class TaskQueueExecutor {
     public void receiveTask(BasicShipTask task) {
         switch (task.taskType) {
             case IMMEDIATE:
-                ((ImmediateShipTask) task).execute(shipService);
+                ((ImmediateShipTask) task).execute(shipTasksService);
                 break;
             case SCHEDULED:
                 scheduledTaskService.addTask((ScheduledTask) task);

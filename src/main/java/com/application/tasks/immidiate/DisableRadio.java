@@ -1,11 +1,10 @@
 package com.application.tasks.immidiate;
 
-import com.application.services.ShipService;
+import com.application.services.ShipTasksService;
 import com.application.tasks.ImmediateShipTask;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @JsonSerialize
@@ -24,7 +23,7 @@ public class DisableRadio extends ImmediateShipTask {
     }
 
     @Override
-    public void execute(ShipService shipService) {
-        shipService.disableRadio(turns, sender);
+    public void execute(ShipTasksService shipTasksService) {
+        shipTasksService.disableRadio(turns, sender);
     }
 }

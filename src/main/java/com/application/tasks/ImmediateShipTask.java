@@ -1,6 +1,6 @@
 package com.application.tasks;
 
-import com.application.services.ShipService;
+import com.application.services.ShipTasksService;
 
 
 public abstract class ImmediateShipTask extends BasicShipTask {
@@ -13,5 +13,5 @@ public abstract class ImmediateShipTask extends BasicShipTask {
         super(ShipTaskType.IMMEDIATE, sender);
     }
 
-    public abstract void execute(ShipService shipService);
+    public abstract void execute(ShipTasksService shipTasksService);
 }

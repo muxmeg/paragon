@@ -1,5 +1,6 @@
 package com.application.services.gamelogic;
 
+import com.application.controllers.socket.MeteorStormController;
 import com.application.model.Ship;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,12 @@ public class MeteorStormService {
 
     private int currentStormChance = 0;
     private int nextStormLevel = 0;
+
+    private final MeteorStormController meteorStormController;
+
+    public MeteorStormService(MeteorStormController meteorStormController) {
+        this.meteorStormController = meteorStormController;
+    }
 
     public int checkForStorm() {
         currentStormChance += ThreadLocalRandom.current().nextInt(MINIMUM_LEVEL_CHANCE, MAXIMUM_LEVEL_CHANCE + 1);
@@ -36,12 +43,25 @@ public class MeteorStormService {
             case 0:
                 break;
             case 1:
+                ship.setHull(ship.getHull() - 10);
+                ship.setEngine(ship.getEngine() - 10);
+                ship.setAir(ship.getAir() - 5);
                 break;
             case 2:
+                ship.setHull(ship.getHull() - 25);
+                ship.setEngine(ship.getEngine() - 20);
+                ship.setAir(ship.getAir() - 10);
                 break;
             case 3:
+                ship.setHull(ship.getHull() - 50);
+                ship.setEngine(ship.getEngine() - 30);
+                ship.setAir(ship.getAir() - 15);
                 break;
         }
         return ship;
+    }
+
+    public void updateMeteorStormData() {
+        meteorStormController.updateStormPrediction(nextStormLevel);
     }
 }
