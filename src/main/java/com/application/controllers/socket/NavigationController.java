@@ -2,6 +2,7 @@ package com.application.controllers.socket;
 
 import com.application.dto.NavigationCommandsDto;
 import com.application.dto.NavigationDataDto;
+import com.application.dto.WindDataDto;
 import com.application.model.Ship;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ public class NavigationController {
     public static final String TOPIC_NAVIGATION_DATA = "/topic/navigationData";
     public static final String TOPIC_NAVIGATION_STRINGS = "/topic/navigationStrings";
     public static final String TOPIC_NAVIGATION_COMMANDS = "/topic/navigationCommands";
-    public static final String TOPIC_STORM_PREDICTION = "/topic/stormPrediction";
+    public static final String TOPIC_WIND_DATA = "/topic/windData";
 
     private final SimpMessagingTemplate template;
 
@@ -35,8 +36,8 @@ public class NavigationController {
         template.convertAndSend(TOPIC_NAVIGATION_COMMANDS, dto);
     }
 
-    public void updateStormPrediction() {
-
+    public void updateWindPrediction(WindDataDto dto) {
+        template.convertAndSend(TOPIC_WIND_DATA, dto);
     }
 
 }
