@@ -13,9 +13,7 @@ public class ScheduledTaskService {
     private final Map<ScheduledTaskType, ScheduledTask> scheduledTasks = new HashMap<>();
 
     public void addTask(ScheduledTask task) {
-        if (task != null) {
-            scheduledTasks.put(task.getScheduledTaskType(), task);
-        }
+        scheduledTasks.put(task.getScheduledTaskType(), task);
     }
 
     public void cleanTasks() {

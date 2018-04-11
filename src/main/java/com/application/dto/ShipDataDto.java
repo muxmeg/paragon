@@ -8,15 +8,16 @@ import lombok.experimental.Builder;
 @Builder
 public class ShipDataDto {
     private int hull;
-    private int air;
+    private double air;
     private int engine;
     private Boolean[] cargo;
     private int airUsers;
+    private boolean anchorOn;
 
     private String message;
 
     public static ShipDataDto fromEntity(Ship ship, String message) {
         return ShipDataDto.builder().hull(ship.getHull()).air(ship.getAir()).engine(ship.getEngine())
-                .cargo(ship.getCargo()).airUsers(ship.getAirUsers()).message(message).build();
+                .cargo(ship.getCargo()).airUsers(ship.getAirUsers()).message(message).anchorOn(ship.isAnchorOn()).build();
     }
 }

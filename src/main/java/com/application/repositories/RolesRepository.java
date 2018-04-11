@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,7 +24,7 @@ public class RolesRepository {
             "name = :name";
     private static final String INSERT_OR_INCREASE_PARAMETER = "INSERT INTO ROLE_PARAMETERS (ROLENAME, NAME, VALUE) " +
             "VALUES (:roleName, :name, :value) ON DUPLICATE KEY UPDATE VALUE = VALUE+1";
-    private static final String FIND_ROLES_NAMES_BY_TEAM = "SELECT name FROM roles WHERE team = :team";
+    private static final String FIND_ROLES_NAMES = "SELECT name FROM roles";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RoleRowMapper rowMapper;
@@ -35,7 +36,7 @@ public class RolesRepository {
         roleParameterRowMapper = new RoleParameterRowMapper();
     }
 
-    public Optional<Role> getRole(String name) {
+    public Optional<Role> getRole(@NotNull String name) {
         try {
             return Optional.of(jdbcTemplate.queryForObject(GET_ROLE, new MapSqlParameterSource("name", name),
                     rowMapper));
@@ -44,17 +45,22 @@ public class RolesRepository {
         }
     }
 
-    public List<String> findRoleNamesByTeam(String team) {
-        return jdbcTemplate.queryForList(FIND_ROLES_NAMES_BY_TEAM, new MapSqlParameterSource("team", team),
-                String.class);
+    public List<String> findRoleNames(String team) {
+        StringBuilder query = new StringBuilder(FIND_ROLES_NAMES);
+        MapSqlParameterSource sqlParameters = new MapSqlParameterSource();
+        if (team != null) {
+            query.append(" WHERE team = :team");
+            sqlParameters.addValue("team", team);
+        }
+        return jdbcTemplate.queryForList(query.toString(), sqlParameters, String.class);
     }
 
-    public List<RoleParameter> findRolesParameters(String roleName) {
+    public List<RoleParameter> findRolesParameters(@NotNull String roleName) {
         return jdbcTemplate.query(FIND_ROLE_PARAMETERS, new MapSqlParameterSource("roleName", roleName),
                 roleParameterRowMapper);
     }
 
-    public void increaseOrSetParameter(String role, String parameter, int value) {
+    public void increaseOrSetParameter(@NotNull String role, @NotNull String parameter, int value) {
         MapSqlParameterSource sqlParameters = new MapSqlParameterSource();
         sqlParameters.addValue("roleName", role);
         sqlParameters.addValue("name", parameter);

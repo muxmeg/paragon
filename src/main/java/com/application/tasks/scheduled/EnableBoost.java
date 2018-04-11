@@ -21,9 +21,10 @@ public class EnableBoost extends ScheduledTask {
     }
 
     @Override
-    public Ship execute(Ship ship) {
+    public Ship execute(Ship ship, StringBuilder message) {
         ship.setSpeed(ship.getSpeed() + 2);
-        ship.setEngine(ship.getEngine() - 10);
+        ship.setEngine(ship.getEngine() - 5);
+        message.append("Boosters enabled. ");
         return ship;
     }
 }

@@ -24,8 +24,13 @@ public class ChangeDirection extends ScheduledTask {
     }
 
     @Override
-    public Ship execute(Ship ship) {
-        ship.setDirection(right ? ship.getDirection().toRight() : ship.getDirection().toLeft());
+    public Ship execute(Ship ship, StringBuilder message) {
+        if (right) {
+            ship.turnRight();
+        } else {
+            ship.turnLeft();
+        }
+        message.append("Direction turned ").append(right ? "right" : "left").append(". ");
         return ship;
     }
 }

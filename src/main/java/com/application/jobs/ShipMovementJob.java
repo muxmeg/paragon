@@ -15,8 +15,8 @@ public class ShipMovementJob {
         this.taskQueueService = jmsService;
     }
 
-//    @Scheduled(fixedRate = 10000)
-//    private void shipMovement() {
-//        taskQueueService.sendShipTask(new ShipJump());
-//    }
+    @Scheduled(fixedRate = 30000)
+    private void shipMovement() {
+        taskQueueService.sendShipTask(new ShipJump());
+    }
 }

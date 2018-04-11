@@ -12,5 +12,5 @@ public abstract class ScheduledTask extends BasicShipTask {
         super(ShipTaskType.SCHEDULED, sender);
     }
 
-    public abstract Ship execute(Ship ship);
+    public abstract Ship execute(Ship ship, StringBuilder message);
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 public class Ship {
     private int hull;
-    private int air;
+    private double air;
     private int engine;
 
     private int coordX;
@@ -26,56 +26,54 @@ public class Ship {
     public Ship() {
     }
 
-//    public Ship(int hull, int air, int engine, int coordX, int coordY, int speed, Direction direction,
-//                int transmitterDisabledTurns, int airUsers, boolean anchorOn) {
-//        this.hull = hull;
-//        this.air = air;
-//        this.engine = engine;
-//        this.coordX = coordX;
-//        this.coordY = coordY;
-//        this.speed = speed;
-//        this.direction = direction;
-//        this.transmitterDisabledTurns = transmitterDisabledTurns;
-//        this.airUsers = airUsers;
-//        this.anchorOn = anchorOn;
-//    }
-
     public Ship copy() {
         return Ship.builder().hull(hull).air(air).engine(engine).coordX(coordX).coordY(coordY).speed(speed)
                 .direction(direction).transmitterDisabledTurns(transmitterDisabledTurns).airUsers(airUsers)
                 .anchorOn(anchorOn).cargo(cargo).build();
     }
 
-    public void move(Direction direction, int distance) {
+    public void move(Direction direction, int speed) {
         switch (direction) {
             case D0:
-                coordY += distance;
+                coordY += speed;
                 break;
             case D45:
-                coordX += distance;
-                coordY += distance;
+                coordX += speed;
+                coordY += speed;
                 break;
             case D90:
-                coordX += distance;
+                coordX += speed;
                 break;
             case D135:
-                coordX += distance;
-                coordY -= distance;
+                coordX += speed;
+                coordY -= speed;
                 break;
             case D180:
-                coordY -= distance;
+                coordY -= speed;
                 break;
             case D225:
-                coordX -= distance;
-                coordY -= distance;
+                coordX -= speed;
+                coordY -= speed;
                 break;
             case D270:
-                coordX -= distance;
+                coordX -= speed;
                 break;
             case D315:
-                coordX -= distance;
-                coordY += distance;
+                coordX -= speed;
+                coordY += speed;
                 break;
         }
+    }
+
+    public boolean isTransmitterDisabled() {
+        return transmitterDisabledTurns > 0;
+    }
+
+    public void turnLeft() {
+        direction = direction.toLeft();
+    }
+
+    public void turnRight() {
+        direction = direction.toRight();
     }
 }

@@ -9,6 +9,7 @@ import com.application.tasks.ScheduledTask;
 import com.application.utils.StringGenerator;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class NavigationCommandsService {
     private static final Set<ScheduledTask> navigationTasks;
 
     private Map<String, ScheduledTask> activeNavigationCommands;
+    private Set<ScheduledTask> receivedNavigationCommands;
     private String activeSymbols;
 
     static {
@@ -46,6 +48,7 @@ public class NavigationCommandsService {
     public Map<String, ScheduledTask> generateNavigationCommands() {
         activeSymbols = stringGenerator.generateStringFromUniqueSymbols(COMMAND_SYMBOLS, COMMAND_LENGTH);
         activeNavigationCommands = new HashMap<>();
+        receivedNavigationCommands = new HashSet<>();
 
         navigationTasks.forEach(this::putNavigationCommand);
         return activeNavigationCommands;
@@ -64,7 +67,11 @@ public class NavigationCommandsService {
     }
 
     public void addNavigationCommand(String commandString) {
-        scheduledTaskService.addTask(activeNavigationCommands.get(commandString));
+        Optional<ScheduledTask> scheduledTask = Optional.ofNullable(activeNavigationCommands.get(commandString));
+        if (scheduledTask.isPresent()) {
+            receivedNavigationCommands.add(scheduledTask.get());
+            scheduledTaskService.addTask(scheduledTask.get());
+        }
     }
 
     public Map<Integer, Character> generatePartialCommand(String commandString) {
@@ -93,4 +100,7 @@ public class NavigationCommandsService {
         navigationController.updateNavigationCommands(new NavigationCommandsDto(commands));
     }
 
+    public boolean isEvasiveManeuverActive() {
+        return navigationTasks.size() == receivedNavigationCommands.size();
+    }
 }

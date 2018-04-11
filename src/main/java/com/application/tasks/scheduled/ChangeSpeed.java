@@ -24,8 +24,9 @@ public class ChangeSpeed extends ScheduledTask {
     }
 
     @Override
-    public Ship execute(Ship ship) {
+    public Ship execute(Ship ship, StringBuilder message) {
         ship.setSpeed(ship.getSpeed() + amount);
+        message.append("Speed adjusted for ").append(amount).append(". ");
         return ship;
     }
 }

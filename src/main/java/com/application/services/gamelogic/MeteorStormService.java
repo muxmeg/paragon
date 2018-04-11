@@ -2,17 +2,19 @@ package com.application.services.gamelogic;
 
 import com.application.controllers.socket.MeteorStormController;
 import com.application.model.Ship;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@Getter
 public class MeteorStormService {
     private final static int MINIMUM_LEVEL_CHANCE = 10;
     private final static int MAXIMUM_LEVEL_CHANCE = 40;
 
     private int currentStormChance = 0;
-    private int nextStormLevel = 0;
+    private int incomingStormLevel = 0;
 
     private final MeteorStormController meteorStormController;
 
@@ -20,26 +22,26 @@ public class MeteorStormService {
         this.meteorStormController = meteorStormController;
     }
 
-    public int checkForStorm() {
+    public void checkForStorm() {
         currentStormChance += ThreadLocalRandom.current().nextInt(MINIMUM_LEVEL_CHANCE, MAXIMUM_LEVEL_CHANCE + 1);
         if (currentStormChance >= 100) {
             int tempResult = ThreadLocalRandom.current().nextInt(0, 6);
             if (tempResult <= 2) {
-                nextStormLevel = 1;
+                incomingStormLevel = 1;
             } else if (tempResult <= 4) {
-                nextStormLevel = 2;
+                incomingStormLevel = 2;
             } else {
-                nextStormLevel = 3;
+                incomingStormLevel = 3;
             }
             currentStormChance = 0;
         } else {
-            nextStormLevel = 0;
+            incomingStormLevel = 0;
         }
-        return nextStormLevel;
+        updateMeteorStormData();
     }
 
     public Ship applyStormEffects(Ship ship) {
-        switch (nextStormLevel) {
+        switch (incomingStormLevel) {
             case 0:
                 break;
             case 1:
@@ -62,6 +64,6 @@ public class MeteorStormService {
     }
 
     public void updateMeteorStormData() {
-        meteorStormController.updateStormPrediction(nextStormLevel);
+        meteorStormController.updateStormPrediction(incomingStormLevel);
     }
 }

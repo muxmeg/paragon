@@ -21,9 +21,10 @@ public class EnableCoolers extends ScheduledTask {
     }
 
     @Override
-    public Ship execute(Ship ship) {
-        ship.setSpeed(ship.getAir() - 5);
+    public Ship execute(Ship ship, StringBuilder message) {
+        ship.setAir(ship.getAir() - 5);
         ship.setEngine(ship.getEngine() + 5);
+        message.append("Engine coolers enabled. ");
         return ship;
     }
 }

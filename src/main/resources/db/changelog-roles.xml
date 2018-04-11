@@ -80,6 +80,12 @@
             <column name="secret" value="true"/>
             <column name="team" value="center"/>
         </insert>
+        <insert tableName="roles">
+            <column name="name" value="GM"/>
+            <column name="password" value="111"/>
+            <column name="secret" value="true"/>
+            <column name="team" value="GM"/>
+        </insert>
     </changeSet>
     <changeSet id="roleParameters" author="mike">
         <createTable tableName="role_parameters">

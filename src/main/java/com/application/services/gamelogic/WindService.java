@@ -24,7 +24,7 @@ public class WindService {
         ship.move(nextDirection, nextSpeed);
 
         nextDirection = Direction.values()[ThreadLocalRandom.current().nextInt(0,
-                Direction.values().length + 1)];
+                Direction.values().length)];
         nextSpeed = ThreadLocalRandom.current().nextInt(1, 4);
     }
 

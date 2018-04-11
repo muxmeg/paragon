@@ -1,11 +1,9 @@
 package com.application.controllers.socket;
 
+import com.application.dto.ShipManualEventDto;
 import com.application.dto.ShipTaskDto;
 import com.application.services.TaskQueueService;
-import com.application.tasks.immidiate.DisableRadio;
-import com.application.tasks.immidiate.EjectCargo;
-import com.application.tasks.immidiate.GeneratorActivation;
-import com.application.tasks.immidiate.SwitchAnchor;
+import com.application.tasks.immidiate.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
@@ -34,6 +32,23 @@ public class ImmediateTaskController {
             case "ejectCargo":
                 taskQueueService.sendShipTask(new EjectCargo(Integer.parseInt(task.getParameters().get("cargoId")),
                     task.getSender()));
+                break;
+            case "manualEvent":
+                taskQueueService.sendShipTask(new ManualEvent(task.getSender(),
+                        ShipManualEventDto.builder()
+                                .air(task.getDoubleProperty("air"))
+                                .airUsers(task.getIntProperty("airUsers"))
+                                .anchorSwitch(task.getBooleanProperty("anchorSwitch"))
+                                .cargo(task.getParameters().get("cargo"))
+                                .coordX(task.getIntProperty("coordX"))
+                                .coordY(task.getIntProperty("coordY"))
+                                .direction(task.getIntProperty("direction"))
+                                .engine(task.getIntProperty("engine"))
+                                .hull(task.getIntProperty("hull"))
+                                .message(task.getParameters().get("message"))
+                                .transmitterDisabledTurns(task.getIntProperty("transmitterDisabledTurns"))
+                                .speed(task.getIntProperty("speed"))
+                                .build()));
                 break;
         }
     }
