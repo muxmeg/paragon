@@ -22,7 +22,8 @@ public class PrivateChatController {
 
     @MessageMapping(MAPPING_PRIVATE_CHAT)
     public void messageReceive(UserMessage message) {
-        if (!shipTasksService.getShip().isTransmitterDisabled()) {
+        if (!shipTasksService.getShip().isTransmitterDisabled() || (!message.getTarget().equals(ANONYMOUS_ROLE) &&
+                !message.getSender().equals(ANONYMOUS_ROLE))) {
             template.convertAndSend(TOPIC_PRIVATE_CHAT + message.getTarget(), message);
         }
     }

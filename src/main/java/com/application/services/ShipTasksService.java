@@ -149,6 +149,9 @@ public class ShipTasksService {
         jumpShipTaskService.cleanTasks();
 
         shipMove(ship, message);
+        if (ship.isTransmitterDisabled()) {
+            ship.setTransmitterDisabledTurns(ship.getTransmitterDisabledTurns() - 1);
+        }
 
         shipRepository.updateShip(ship);
         navigationController.updateNavigationData(ship);
@@ -182,6 +185,8 @@ public class ShipTasksService {
                 ship.setSpeed(-7);
             }
             ship.move(ship.getDirection(), ship.getSpeed());
+        } else {
+            message.append(" Something went wrong. The ship jumped on the same place!");
         }
     }
 
