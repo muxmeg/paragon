@@ -7,17 +7,13 @@ import com.application.dto.ShipManualEventDto;
 import com.application.model.Ship;
 import com.application.repositories.RolesRepository;
 import com.application.repositories.ShipRepository;
-import com.application.services.gamelogic.MeteorStormService;
-import com.application.services.gamelogic.NavigationCommandsService;
-import com.application.services.gamelogic.ScheduledTaskService;
-import com.application.services.gamelogic.WindService;
+import com.application.services.gamelogic.*;
 import com.application.tasks.ScheduledTask;
 import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
@@ -29,6 +25,8 @@ public class ShipTasksService {
     private final MeteorStormService meteorStormService;
     private final ScheduledTaskService jumpShipTaskService;
     private final NavigationCommandsService navigationCommandsService;
+    private final EventLoggingService eventLoggingService;
+    private final RadarService radarService;
     private final WindService windService;
     private final RolesRepository rolesRepository;
     private final NavigationController navigationController;
@@ -36,12 +34,14 @@ public class ShipTasksService {
 
     public ShipTasksService(ShipRepository shipRepository, MeteorStormService meteorStormService,
                             ScheduledTaskService jumpShipTaskService, NavigationCommandsService navigationCommandsService,
-                            WindService windService, RolesRepository rolesRepository, NavigationController navigationController,
-                            ShipDataController shipDataController) {
+                            EventLoggingService eventLoggingService, RadarService radarService, WindService windService, RolesRepository rolesRepository,
+                            NavigationController navigationController, ShipDataController shipDataController) {
         this.shipRepository = shipRepository;
         this.meteorStormService = meteorStormService;
         this.jumpShipTaskService = jumpShipTaskService;
         this.navigationCommandsService = navigationCommandsService;
+        this.eventLoggingService = eventLoggingService;
+        this.radarService = radarService;
         this.windService = windService;
         this.rolesRepository = rolesRepository;
         this.navigationController = navigationController;
@@ -129,7 +129,7 @@ public class ShipTasksService {
     public void generatorActivation(String sender) {
         Ship ship = shipRepository.getShip();
         ship.setEngine(ship.getEngine() - 50);
-        ship.setAir(ship.getEngine() - 20);
+        ship.setAir(ship.getAir() - 20);
         ship.setTransmitterDisabledTurns(ship.getTransmitterDisabledTurns() + 1);
         shipRepository.updateShip(ship);
 
@@ -146,7 +146,6 @@ public class ShipTasksService {
 
         Collection<ScheduledTask> preparedTasks = jumpShipTaskService.getScheduledTasks();
         preparedTasks.forEach(task -> task.execute(ship, message));
-        jumpShipTaskService.cleanTasks();
 
         shipMove(ship, message);
         if (ship.isTransmitterDisabled()) {
@@ -158,17 +157,21 @@ public class ShipTasksService {
 
         meteorStormService.checkForStorm();
         navigationCommandsService.updateNavigationCommands();
-        shipDataController.onShipDataUpdate(ShipDataDto.fromEntity(ship,
-                message.toString()));
+        ShipDataDto shipDataDto = ShipDataDto.fromEntity(ship, message.toString());
+        shipDataController.onShipDataUpdate(shipDataDto);
+        eventLoggingService.logShipJump(shipDataDto);
+        radarService.detectObjects(ship);
+        windService.updateWindData();
+        jumpShipTaskService.cleanTasks();
     }
 
     private void shipMove(Ship ship, StringBuilder message) {
         boolean slip = false;
         if (ship.getEngine() <= 60) {
             if (ship.getEngine() > 30) {
-                slip = ThreadLocalRandom.current().nextInt(100) < 60;
+                slip = ThreadLocalRandom.current().nextInt(101) < 30;
             } else if (ship.getEngine() > 0) {
-                slip = ThreadLocalRandom.current().nextInt(100) < 30;
+                slip = ThreadLocalRandom.current().nextInt(101) < 60;
             } else {
                 slip = true;
             }

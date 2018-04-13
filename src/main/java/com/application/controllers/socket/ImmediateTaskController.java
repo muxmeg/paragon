@@ -2,7 +2,9 @@ package com.application.controllers.socket;
 
 import com.application.dto.ShipManualEventDto;
 import com.application.dto.ShipTaskDto;
+import com.application.services.EventLoggingService;
 import com.application.services.TaskQueueService;
+import com.application.tasks.ShipTaskType;
 import com.application.tasks.immidiate.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -12,12 +14,16 @@ public class ImmediateTaskController {
     public static final String MAPPING_IMMEDIATE_TASK = "/immediateTask";
 
     private final TaskQueueService taskQueueService;
-    public ImmediateTaskController(TaskQueueService taskQueueService) {
+    private final EventLoggingService eventLoggingService;
+
+    public ImmediateTaskController(TaskQueueService taskQueueService, EventLoggingService eventLoggingService) {
         this.taskQueueService = taskQueueService;
+        this.eventLoggingService = eventLoggingService;
     }
 
     @MessageMapping(MAPPING_IMMEDIATE_TASK)
     public void setMappingImmediateTaskReceive(ShipTaskDto task) {
+        eventLoggingService.logTask(task, ShipTaskType.IMMEDIATE);
         switch (task.getType()) {
             case "disableRadio":
                 taskQueueService.sendShipTask(new DisableRadio(Integer.parseInt(task.getParameters().get("turns")),

@@ -3,13 +3,15 @@ package com.application.services.gamelogic;
 import com.application.controllers.socket.NavigationController;
 import com.application.dto.EncryptedCommandDto;
 import com.application.dto.NavigationCommandsDto;
+import com.application.services.EventLoggingService;
+import com.application.tasks.ShipTaskType;
 import com.application.tasks.scheduled.ChangeDirection;
 import com.application.tasks.scheduled.ChangeSpeed;
 import com.application.tasks.ScheduledTask;
+import com.application.tasks.scheduled.ScheduledTaskType;
 import com.application.utils.StringGenerator;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -23,10 +25,10 @@ public class NavigationCommandsService {
     private static final String COMMAND_SYMBOLS = "abcdABCDX123!?@#$%^&*()+=-'/.,[]{}";
     public static final int COMMAND_LENGTH = 12;
     public static final int PARTIAL_COMMAND_LENGTH = 3;
+    private final EventLoggingService eventLoggingService;
     private static final Set<ScheduledTask> navigationTasks;
 
     private Map<String, ScheduledTask> activeNavigationCommands;
-    private Set<ScheduledTask> receivedNavigationCommands;
     private String activeSymbols;
 
     static {
@@ -39,16 +41,16 @@ public class NavigationCommandsService {
     }
 
     public NavigationCommandsService(StringGenerator stringGenerator, ScheduledTaskService scheduledTaskService,
-                                     NavigationController navigationController) {
+                                     NavigationController navigationController, EventLoggingService eventLoggingService) {
         this.stringGenerator = stringGenerator;
         this.scheduledTaskService = scheduledTaskService;
         this.navigationController = navigationController;
+        this.eventLoggingService = eventLoggingService;
     }
 
     public Map<String, ScheduledTask> generateNavigationCommands() {
         activeSymbols = stringGenerator.generateStringFromUniqueSymbols(COMMAND_SYMBOLS, COMMAND_LENGTH);
         activeNavigationCommands = new HashMap<>();
-        receivedNavigationCommands = new HashSet<>();
 
         navigationTasks.forEach(this::putNavigationCommand);
         return activeNavigationCommands;
@@ -69,8 +71,10 @@ public class NavigationCommandsService {
     public void addNavigationCommand(String commandString) {
         Optional<ScheduledTask> scheduledTask = Optional.ofNullable(activeNavigationCommands.get(commandString));
         if (scheduledTask.isPresent()) {
-            receivedNavigationCommands.add(scheduledTask.get());
             scheduledTaskService.addTask(scheduledTask.get());
+            eventLoggingService.logNavigationTask(scheduledTask.get());
+        } else {
+            eventLoggingService.logNavigationTask(null);
         }
     }
 
@@ -101,6 +105,6 @@ public class NavigationCommandsService {
     }
 
     public boolean isEvasiveManeuverActive() {
-        return navigationTasks.size() == receivedNavigationCommands.size();
+        return scheduledTaskService.contains(navigationTasks);
     }
 }

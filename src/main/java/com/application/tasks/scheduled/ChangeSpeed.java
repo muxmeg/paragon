@@ -29,4 +29,11 @@ public class ChangeSpeed extends ScheduledTask {
         message.append("Speed adjusted for ").append(amount).append(". ");
         return ship;
     }
+
+    @Override
+    public String toString() {
+        return ", sender='" + sender + '\'' +
+                ", taskType=ChangeSpeed" +
+                ", amount=" + amount;
+    }
 }

@@ -33,4 +33,12 @@ public class ChangeDirection extends ScheduledTask {
         message.append("Direction turned ").append(right ? "right" : "left").append(". ");
         return ship;
     }
+
+    @Override
+    public String toString() {
+        return "sender='" + sender + '\'' +
+                ", taskType=ChangeDirection" +
+                ", right=" + right
+                ;
+    }
 }

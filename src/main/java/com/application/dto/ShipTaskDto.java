@@ -23,4 +23,11 @@ public class ShipTaskDto {
     public Boolean getBooleanProperty(String property) {
         return parameters.containsKey(property) ? Boolean.parseBoolean(parameters.get(property)) : null;
     }
+
+    @Override
+    public String toString() {
+        return ", sender='" + sender + '\'' +
+                "type='" + type + '\'' +
+                ", parameters=" + parameters;
+    }
 }

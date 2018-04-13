@@ -2,6 +2,7 @@ package com.application.repositories;
 
 import com.application.model.Direction;
 import com.application.model.Ship;
+import com.application.services.EventLoggingService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 @Transactional
@@ -24,31 +24,37 @@ public class ShipRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ShipRowMapper rowMapper;
+    private final EventLoggingService eventLoggingService;
     private Ship cachedShip;
 
-    public ShipRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public ShipRepository(NamedParameterJdbcTemplate jdbcTemplate, EventLoggingService eventLoggingService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.eventLoggingService = eventLoggingService;
         this.rowMapper = new ShipRowMapper();
+        cachedShip = jdbcTemplate.queryForObject(GET_SHIP, new MapSqlParameterSource(), rowMapper);
     }
 
-    private void queryShip() {
-        if (cachedShip == null) {
-            cachedShip = jdbcTemplate.queryForObject(GET_SHIP, new MapSqlParameterSource(), rowMapper);
-        }
-    }
+//    private void queryShip() {
+//        if (cachedShip == null) {
+//            synchronized (this) {
+//
+//            }
+//        }
+//    }
 
     public Ship getShip() {
-        queryShip();
+//        queryShip();
         return cachedShip.copy();
     }
 
     public boolean isTransmitterEnabled() {
-        queryShip();
+//        queryShip();
         return cachedShip.getTransmitterDisabledTurns() > 0;
     }
 
     public void updateShip(Ship ship) {
         cachedShip = ship.copy();
+        eventLoggingService.logShipChange(ship);
         jdbcTemplate.update(UPDATE_SHIP, new MapSqlParameterSource().addValue("hull", ship.getHull())
                 .addValue("air", ship.getAir()).addValue("engine", ship.getEngine())
                 .addValue("coordX", ship.getCoordX()).addValue("coordY", ship.getCoordY())

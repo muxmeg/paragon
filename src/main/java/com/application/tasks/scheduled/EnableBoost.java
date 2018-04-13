@@ -27,4 +27,10 @@ public class EnableBoost extends ScheduledTask {
         message.append("Boosters enabled. ");
         return ship;
     }
+
+    @Override
+    public String toString() {
+        return "sender='" + sender + '\'' +
+                ", taskType=EnableBoost";
+    }
 }

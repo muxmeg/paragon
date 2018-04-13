@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ScheduledTaskService {
@@ -14,6 +15,10 @@ public class ScheduledTaskService {
 
     public void addTask(ScheduledTask task) {
         scheduledTasks.put(task.getScheduledTaskType(), task);
+    }
+
+    public boolean contains(Set<ScheduledTask> tasks) {
+        return scheduledTasks.values().containsAll(tasks);
     }
 
     public void cleanTasks() {

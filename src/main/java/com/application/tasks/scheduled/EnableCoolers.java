@@ -27,4 +27,10 @@ public class EnableCoolers extends ScheduledTask {
         message.append("Engine coolers enabled. ");
         return ship;
     }
+
+    @Override
+    public String toString() {
+        return "sender='" + sender + '\'' +
+                ", taskType=EnableCoolers";
+    }
 }
