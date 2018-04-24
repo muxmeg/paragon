@@ -8,4 +8,5 @@ import lombok.experimental.Builder;
 public class RadarDataDto {
     private boolean canBeBoarded;
     private RadarObject object;
+    private double distance;
 }

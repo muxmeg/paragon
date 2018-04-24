@@ -9,28 +9,28 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @JsonSerialize
 @Data
-public class EnableCoolers extends ScheduledTask {
+public class EjectAir extends ScheduledTask {
 
-    public EnableCoolers(String sender) {
+    public EjectAir(String sender) {
         super(sender);
     }
 
     @Override
     public ScheduledTaskType getScheduledTaskType() {
-        return ScheduledTaskType.COOLERS;
+        return ScheduledTaskType.EJECT_AIR;
     }
 
     @Override
     public Ship execute(Ship ship, StringBuilder message) {
-        ship.setAir(ship.getAir() - 4);
-        ship.setEngine(ship.getEngine() + 5);
-        message.append("Engine coolers enabled. ");
+        ship.setAir(ship.getAir() - 5);
+        message.append("Unexpected air leak detected! ");
         return ship;
     }
 
     @Override
     public String toString() {
         return "sender='" + sender + '\'' +
-                ", taskType=EnableCoolers";
+                ", taskType=EjectAir"
+                ;
     }
 }

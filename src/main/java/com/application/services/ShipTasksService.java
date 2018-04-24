@@ -128,8 +128,8 @@ public class ShipTasksService {
     @Transactional
     public void generatorActivation(String sender) {
         Ship ship = shipRepository.getShip();
-        ship.setEngine(ship.getEngine() - 50);
-        ship.setAir(ship.getAir() - 20);
+        ship.setEngine(ship.getEngine() - 30);
+        ship.setAir(ship.getAir() - 10);
         ship.setTransmitterDisabledTurns(ship.getTransmitterDisabledTurns() + 1);
         shipRepository.updateShip(ship);
 
@@ -140,29 +140,36 @@ public class ShipTasksService {
 
     @Transactional
     public void executeJump() {
-        StringBuilder message = new StringBuilder("Ship jump performed! ");
+        StringBuilder message = new StringBuilder();
 
         Ship ship = shipRepository.getShip();
 
-        Collection<ScheduledTask> preparedTasks = jumpShipTaskService.getScheduledTasks();
-        preparedTasks.forEach(task -> task.execute(ship, message));
-
-        shipMove(ship, message);
         if (ship.isTransmitterDisabled()) {
             ship.setTransmitterDisabledTurns(ship.getTransmitterDisabledTurns() - 1);
         }
+        if (!ship.isAnchorOn()) {
+            message.append("Ship jump performed! ");
 
-        shipRepository.updateShip(ship);
-        navigationController.updateNavigationData(ship);
+            Collection<ScheduledTask> preparedTasks = jumpShipTaskService.getScheduledTasks();
+            preparedTasks.forEach(task -> task.execute(ship, message));
 
-        meteorStormService.checkForStorm();
-        navigationCommandsService.updateNavigationCommands();
+            shipMove(ship, message);
+
+            shipRepository.updateShip(ship);
+            navigationController.updateNavigationData(ship);
+
+            meteorStormService.checkForStorm();
+            navigationCommandsService.updateNavigationCommands();
+            radarService.detectObjects(ship);
+            windService.updateWindData();
+            jumpShipTaskService.cleanTasks();
+        } else {
+            message.append("Anchor is on. Jump wasn't performed. ");
+        }
+
         ShipDataDto shipDataDto = ShipDataDto.fromEntity(ship, message.toString());
         shipDataController.onShipDataUpdate(shipDataDto);
         eventLoggingService.logShipJump(shipDataDto);
-        radarService.detectObjects(ship);
-        windService.updateWindData();
-        jumpShipTaskService.cleanTasks();
     }
 
     private void shipMove(Ship ship, StringBuilder message) {
@@ -194,11 +201,11 @@ public class ShipTasksService {
     }
 
     private void consumeAir(Ship ship) {
-        ship.setAir(ship.getAir() - (ship.getAirUsers() * 0.4));
+        ship.setAir(ship.getAir() - (ship.getAirUsers() * 0.3));
     }
 
     private void consumeEngine(Ship ship) {
-        ship.setEngine(ship.getEngine() - 3);
+        ship.setEngine(ship.getEngine() - ThreadLocalRandom.current().nextInt(2, 4));
     }
 
     private void applyMeteorRain(Ship ship, StringBuilder message) {

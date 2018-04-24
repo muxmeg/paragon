@@ -46,17 +46,17 @@ public class MeteorStormService {
                 break;
             case 1:
                 ship.setHull(ship.getHull() - 10);
-                ship.setEngine(ship.getEngine() - 10);
+                ship.setEngine(ship.getEngine() - 5);
                 ship.setAir(ship.getAir() - 5);
                 break;
             case 2:
-                ship.setHull(ship.getHull() - 25);
-                ship.setEngine(ship.getEngine() - 20);
+                ship.setHull(ship.getHull() - 20);
+                ship.setEngine(ship.getEngine() - 10);
                 ship.setAir(ship.getAir() - 10);
                 break;
             case 3:
-                ship.setHull(ship.getHull() - 50);
-                ship.setEngine(ship.getEngine() - 30);
+                ship.setHull(ship.getHull() - 40);
+                ship.setEngine(ship.getEngine() - 20);
                 ship.setAir(ship.getAir() - 15);
                 break;
         }

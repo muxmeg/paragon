@@ -4,6 +4,7 @@ import com.application.dto.ShipTaskDto;
 import com.application.services.EventLoggingService;
 import com.application.services.gamelogic.ScheduledTaskService;
 import com.application.tasks.ShipTaskType;
+import com.application.tasks.scheduled.EjectAir;
 import com.application.tasks.scheduled.EnableBoost;
 import com.application.tasks.scheduled.EnableCoolers;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -30,6 +31,9 @@ public class ScheduledTaskController {
                 break;
             case "enableCoolers":
                 scheduledTaskService.addTask(new EnableCoolers(task.getSender()));
+                break;
+            case "ejectAir":
+                scheduledTaskService.addTask(new EjectAir(task.getSender()));
                 break;
         }
     }

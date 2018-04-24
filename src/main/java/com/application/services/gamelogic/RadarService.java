@@ -1,13 +1,10 @@
 package com.application.services.gamelogic;
 
 import com.application.controllers.socket.RadarDataController;
-import com.application.controllers.socket.ShipDataController;
 import com.application.dto.RadarDataDto;
 import com.application.dto.RadarObject;
 import com.application.model.Ship;
 import com.application.repositories.ShipRepository;
-import lombok.Data;
-import lombok.experimental.Builder;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +24,8 @@ public class RadarService {
         this.shipRepository = shipRepository;//ship at 20,20, up, speed 1
         this.radarDataController = radarDataController;
         objects = Arrays.asList(RadarObject.builder().coordX(50).coordY(10).name("Probe").build(),
-                RadarObject.builder().coordX(80).coordY(40).name("Space station").build(),
-                RadarObject.builder().coordX(100).coordY(-10).name("Space station").build(),
+                RadarObject.builder().coordX(80).coordY(40).name("Space station").build(), //destroyed
+                RadarObject.builder().coordX(100).coordY(-10).name("Space station").build(), //safe
                 RadarObject.builder().coordX(120).coordY(10).name("Mars orbital station --Destination--")
                         .build());
     }
@@ -40,12 +37,18 @@ public class RadarService {
     public void detectObjects(Ship ship) {
         Optional<RadarObject> object = objects.stream().filter(radarObject -> distance(ship.getCoordX(),
                 ship.getCoordY(), radarObject.getCoordX(), radarObject.getCoordY()) <= DETECT_DISTANCE).findFirst();
-        val result = object.isPresent() ? RadarDataDto.builder().object(object.get())
-                .canBeBoarded(distance(ship.getCoordX(), ship.getCoordY(),
-                        object.get().getCoordX(), object.get().getCoordY()) <= BOARD_DISTANCE)
-                .build()
-                : RadarDataDto.builder().object(null).canBeBoarded(false).build();
-        radarDataController.updateRadar(result);
+        if (object.isPresent()) {
+            int distance = distance(ship.getCoordX(), ship.getCoordY(), object.get().getCoordX(),
+                    object.get().getCoordY());
+            val result = RadarDataDto.builder()
+                    .object(object.get())
+                    .distance(distance)
+                    .canBeBoarded(distance <= BOARD_DISTANCE)
+                    .build();
+            radarDataController.updateRadar(result);
+        } else {
+            radarDataController.updateRadar(RadarDataDto.builder().build());
+        }
     }
 
     private int distance(int x1, int y1, int x2, int y2) {
