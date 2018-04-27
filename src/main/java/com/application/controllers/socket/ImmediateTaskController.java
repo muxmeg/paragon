@@ -37,7 +37,7 @@ public class ImmediateTaskController {
                 break;
             case "ejectCargo":
                 taskQueueService.sendShipTask(new EjectCargo(Integer.parseInt(task.getParameters().get("cargoId")),
-                    task.getSender()));
+                        task.getSender()));
                 break;
             case "manualEvent":
                 taskQueueService.sendShipTask(new ManualEvent(task.getSender(),
@@ -55,6 +55,12 @@ public class ImmediateTaskController {
                                 .transmitterDisabledTurns(task.getIntProperty("transmitterDisabledTurns"))
                                 .speed(task.getIntProperty("speed"))
                                 .build()));
+                break;
+            case "changePassword":
+                taskQueueService.sendShipTask(
+                        new ChangePassword(task.getParameters().get("role"),
+                                task.getParameters().get("newPassword"),
+                                task.getSender()));
                 break;
         }
     }

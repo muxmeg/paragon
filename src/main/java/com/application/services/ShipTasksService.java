@@ -1,6 +1,7 @@
 package com.application.services;
 
 import com.application.controllers.socket.NavigationController;
+import com.application.controllers.socket.RoleController;
 import com.application.controllers.socket.ShipDataController;
 import com.application.dto.ShipDataDto;
 import com.application.dto.ShipManualEventDto;
@@ -31,11 +32,13 @@ public class ShipTasksService {
     private final RolesRepository rolesRepository;
     private final NavigationController navigationController;
     private final ShipDataController shipDataController;
+    private final RoleController roleController;
 
     public ShipTasksService(ShipRepository shipRepository, MeteorStormService meteorStormService,
                             ScheduledTaskService jumpShipTaskService, NavigationCommandsService navigationCommandsService,
-                            EventLoggingService eventLoggingService, RadarService radarService, WindService windService, RolesRepository rolesRepository,
-                            NavigationController navigationController, ShipDataController shipDataController) {
+                            EventLoggingService eventLoggingService, RadarService radarService, WindService windService,
+                            RolesRepository rolesRepository, NavigationController navigationController,
+                            ShipDataController shipDataController, RoleController roleController) {
         this.shipRepository = shipRepository;
         this.meteorStormService = meteorStormService;
         this.jumpShipTaskService = jumpShipTaskService;
@@ -46,6 +49,7 @@ public class ShipTasksService {
         this.rolesRepository = rolesRepository;
         this.navigationController = navigationController;
         this.shipDataController = shipDataController;
+        this.roleController = roleController;
     }
 
     public Ship getShip() {
@@ -233,5 +237,10 @@ public class ShipTasksService {
     public void updateNavigationData() {
         Ship ship = shipRepository.getShip();
         navigationController.updateNavigationData(ship);
+    }
+
+    public void changePassword(String role, String newPassword) {
+        rolesRepository.changePassword(role, newPassword);
+        roleController.logoutUser(role);
     }
 }
