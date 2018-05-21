@@ -13,12 +13,11 @@ public class ChangePassword extends ImmediateShipTask {
 
     private final String role;
     private final String newPassword;
-    private final Boolean isSecret;
+    private boolean isSecret;
 
     public ChangePassword() {
         role = "";
         newPassword = "";
-        isSecret = null;
     }
 
     public ChangePassword(String role, String newPassword, boolean isSecret, String sender) {
