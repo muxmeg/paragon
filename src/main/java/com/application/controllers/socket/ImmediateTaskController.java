@@ -60,6 +60,7 @@ public class ImmediateTaskController {
                 taskQueueService.sendShipTask(
                         new ChangePassword(task.getParameters().get("role"),
                                 task.getParameters().get("newPassword"),
+                                task.getBooleanProperty("isSecret"),
                                 task.getSender()));
                 break;
         }

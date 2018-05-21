@@ -4,15 +4,19 @@ import com.application.model.Ship;
 import lombok.Data;
 import lombok.experimental.Builder;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @Builder
 public class ShipDataDto {
-    private int hull;
-    private double air;
-    private int engine;
-    private Boolean[] cargo;
-    private int airUsers;
-    private boolean anchorOn;
+    private final int hull;
+    private final double air;
+    private final int engine;
+    private final Boolean[] cargo;
+    private final int airUsers;
+    private final boolean anchorOn;
+    private final LocalDateTime date = LocalDateTime.now();
 
     private String message;
 

@@ -21,62 +21,62 @@
     <changeSet id="rolesData" author="mike">
         <insert tableName="roles">
             <column name="name" value="captain"/>
-            <column name="password" value="zaSdGhj"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="firstPilot"/>
-            <column name="password" value="4123mmnk"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="secondPilot"/>
-            <column name="password" value="kkdaQie"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="engineer"/>
-            <column name="password" value="vcxDtop"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="navigator"/>
-            <column name="password" value="34dAw3f"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="operator"/>
-            <column name="password" value="nnDvHk"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="ship"/>
         </insert>
 
         <insert tableName="roles">
             <column name="name" value="dispatcher"/>
-            <column name="password" value="JJJ03l"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="center"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="SKK"/>
-            <column name="password" value="122dGG"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="center"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="coordinator"/>
-            <column name="password" value="dDgv12"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="center"/>
         </insert>
         <insert tableName="roles">
             <column name="name" value="analyst"/>
-            <column name="password" value="doBlgqG"/>
+            <column name="password" value="111"/>
             <column name="secret" value="true"/>
             <column name="team" value="center"/>
         </insert>

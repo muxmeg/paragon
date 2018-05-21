@@ -34,27 +34,16 @@ public class ShipRepository {
         cachedShip = jdbcTemplate.queryForObject(GET_SHIP, new MapSqlParameterSource(), rowMapper);
     }
 
-//    private void queryShip() {
-//        if (cachedShip == null) {
-//            synchronized (this) {
-//
-//            }
-//        }
-//    }
-
     public Ship getShip() {
-//        queryShip();
         return cachedShip.copy();
     }
 
     public boolean isTransmitterEnabled() {
-//        queryShip();
         return cachedShip.getTransmitterDisabledTurns() > 0;
     }
 
     public void updateShip(Ship ship) {
         cachedShip = ship.copy();
-        eventLoggingService.logShipChange(ship);
         jdbcTemplate.update(UPDATE_SHIP, new MapSqlParameterSource().addValue("hull", ship.getHull())
                 .addValue("air", ship.getAir()).addValue("engine", ship.getEngine())
                 .addValue("coordX", ship.getCoordX()).addValue("coordY", ship.getCoordY())

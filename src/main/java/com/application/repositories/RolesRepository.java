@@ -25,7 +25,8 @@ public class RolesRepository {
     private static final String INSERT_OR_INCREASE_PARAMETER = "INSERT INTO ROLE_PARAMETERS (ROLENAME, NAME, VALUE) " +
             "VALUES (:roleName, :name, :value) ON DUPLICATE KEY UPDATE VALUE = VALUE+1";
     private static final String FIND_ROLES_NAMES = "SELECT name FROM roles";
-    private static final String UPDATE_ROLE_PASSWORD = "UPDATE roles SET password = :newPassword WHERE name = :roleName";
+    private static final String UPDATE_ROLE_PASSWORD = "UPDATE roles SET password = :newPassword, secret = :isSecret " +
+            "WHERE name = :roleName";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final RoleRowMapper rowMapper;
@@ -69,10 +70,11 @@ public class RolesRepository {
         jdbcTemplate.update(INSERT_OR_INCREASE_PARAMETER, sqlParameters);
     }
 
-    public void changePassword(@NotNull String role, @NotNull String password) {
+    public void changePassword(@NotNull String role, @NotNull String password, boolean isSecret) {
         MapSqlParameterSource sqlParameters = new MapSqlParameterSource();
         sqlParameters.addValue("roleName", role);
         sqlParameters.addValue("newPassword", password);
+        sqlParameters.addValue("isSecret", isSecret);
         jdbcTemplate.update(UPDATE_ROLE_PASSWORD, sqlParameters);
     }
 

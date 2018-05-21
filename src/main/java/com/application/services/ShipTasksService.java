@@ -81,7 +81,7 @@ public class ShipTasksService {
             shipRepository.updateShip(ship);
 
             shipDataController.onShipDataUpdate(ShipDataDto.fromEntity(ship,
-                    MessageFormat.format("Warning, cargo slot {0} been manually ejected!", cargoId)));
+                    MessageFormat.format("Warning, cargo slot {0} been manually ejected!", cargoId + 1)));
         }
     }
 
@@ -189,7 +189,7 @@ public class ShipTasksService {
         }
         if (!slip) {
             windService.applyNext(ship);
-            consumeAir(ship);
+            consumeAir(ship, true);
             consumeEngine(ship);
             applyMeteorRain(ship, message);
 
@@ -200,12 +200,17 @@ public class ShipTasksService {
             }
             ship.move(ship.getDirection(), ship.getSpeed());
         } else {
+            consumeAir(ship, false);
             message.append(" Something went wrong. The ship jumped on the same place!");
         }
     }
 
-    private void consumeAir(Ship ship) {
-        ship.setAir(ship.getAir() - (ship.getAirUsers() * 0.3));
+    private void consumeAir(Ship ship, boolean successfulMove) {
+        if (successfulMove) {
+            ship.setAir(ship.getAir() - (ship.getAirUsers() * 0.3));
+        } else {
+            ship.setAir(ship.getAir() - (ship.getAirUsers() * 0.1));
+        }
     }
 
     private void consumeEngine(Ship ship) {
@@ -239,8 +244,8 @@ public class ShipTasksService {
         navigationController.updateNavigationData(ship);
     }
 
-    public void changePassword(String role, String newPassword) {
-        rolesRepository.changePassword(role, newPassword);
+    public void changePassword(String role, String newPassword, boolean isSecret) {
+        rolesRepository.changePassword(role, newPassword, isSecret);
         roleController.logoutUser(role);
     }
 }

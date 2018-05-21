@@ -13,20 +13,23 @@ public class ChangePassword extends ImmediateShipTask {
 
     private final String role;
     private final String newPassword;
+    private final Boolean isSecret;
 
     public ChangePassword() {
         role = "";
         newPassword = "";
+        isSecret = null;
     }
 
-    public ChangePassword(String role, String newPassword, String sender) {
+    public ChangePassword(String role, String newPassword, boolean isSecret, String sender) {
         super(sender);
         this.role = role;
         this.newPassword = newPassword;
+        this.isSecret = isSecret;
     }
 
     @Override
     public void execute(ShipTasksService shipTasksService) {
-        shipTasksService.changePassword(role, newPassword);
+        shipTasksService.changePassword(role, newPassword, isSecret);
     }
 }
